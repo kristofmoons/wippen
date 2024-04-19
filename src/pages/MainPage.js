@@ -34,6 +34,16 @@ const MainPage = () => {
       return updatedPlayers;
     });
   };
+
+  const showCardPoints = () => {
+    alert("Kaartpunten:\n" +
+      "meeste kaarten: 2\n" +
+      "meeste ♠: 2\n" +
+      "♦10: 2\n" +
+      "♠2 :1\n" +
+      "elke A kaart:1");
+  };
+  
   
 
   return (
@@ -72,6 +82,10 @@ const MainPage = () => {
           </div>
         ))}
       </div>
+
+      <div className="text-center mt-4">
+      <button className="btn btn-info" onClick={showCardPoints}>Toon Kaartpunten</button>
+    </div>
     </div>
   );
 };
