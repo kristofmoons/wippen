@@ -1,46 +1,69 @@
-import {useEffect, useState} from "react";
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MainPage = () => {
-  // Staat voor het bijhouden van de scores van de spelers
-  const [scores, setScores] = useState({
-    player1: 0,
-    player2: 0,
-    // Voeg meer spelers toe indien nodig
-  });
+  const [players, setPlayers] = useState([]);
 
-  // Functie om de score van een speler te verhogen
-  const increaseScore = (player) => {
-    setScores(prevScores => ({
-      ...prevScores,
-      [player]: prevScores[player] + 1
-    }));
+  const addPlayer = (name) => {
+    setPlayers(prevPlayers => [
+      ...prevPlayers,
+      { name: name, score: 0 }
+    ]);
   };
 
-  // Functie om de score van een speler te verlagen
-  const decreaseScore = (player) => {
-    if (scores[player] > 0) {
-      setScores(prevScores => ({
-        ...prevScores,
-        [player]: prevScores[player] - 1
-      }));
-    }
+  const increaseScore = (index) => {
+    setPlayers(prevPlayers => {
+      const updatedPlayers = [...prevPlayers];
+      updatedPlayers[index].score += 1;
+      return updatedPlayers;
+    });
+  };
+
+  const decreaseScore = (index) => {
+    setPlayers(prevPlayers => {
+      const updatedPlayers = [...prevPlayers];
+      if (updatedPlayers[index].score > 0) {
+        updatedPlayers[index].score -= 1;
+      }
+      return updatedPlayers;
+    });
   };
 
   return (
-    <div>
-      <h1>Wippen Score Tracker</h1>
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Wippen Score Tracker</h1>
       <div>
         <h2>Spelers:</h2>
-        <div>
-          <span>Speler 1: {scores.player1}</span>
-          <button onClick={() => increaseScore('player1')}>+</button>
-          <button onClick={() => decreaseScore('player1')}>-</button>
-        </div>
-        <div>
-          <span>Speler 2: {scores.player2}</span>
-          <button onClick={() => increaseScore('player2')}>+</button>
-          <button onClick={() => decreaseScore('player2')}>-</button>
-        </div>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          const playerName = e.target.elements.playerName.value;
+          addPlayer(playerName);
+          e.target.elements.playerName.value = '';
+        }}>
+          <div className="input-group mb-3">
+            <input type="text" className="form-control" name="playerName" placeholder="Voeg speler toe" />
+            <div className="input-group-append">
+              <button className="btn btn-primary" type="submit">Toevoegen</button>
+            </div>
+          </div>
+        </form>
+
+        {players.map((player, index) => (
+          <div key={index} className="mb-2">
+            <div className="row">
+              <div className="col">
+                <span>{player.name}</span>
+              </div>
+              <div className="col">
+                <span>Score: {player.score}</span>
+              </div>
+              <div className="col">
+                <button className="btn btn-success" onClick={() => increaseScore(index)}>+</button>
+                <button className="btn btn-danger" onClick={() => decreaseScore(index)}>-</button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
