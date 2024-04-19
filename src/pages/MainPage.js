@@ -14,20 +14,27 @@ const MainPage = () => {
   const increaseScore = (index) => {
     setPlayers(prevPlayers => {
       const updatedPlayers = [...prevPlayers];
-      updatedPlayers[index].score += 1;
+      updatedPlayers[index] = {
+        ...updatedPlayers[index],
+        score: updatedPlayers[index].score + 1
+      };
       return updatedPlayers;
     });
   };
-
+  
   const decreaseScore = (index) => {
     setPlayers(prevPlayers => {
       const updatedPlayers = [...prevPlayers];
       if (updatedPlayers[index].score > 0) {
-        updatedPlayers[index].score -= 1;
+        updatedPlayers[index] = {
+          ...updatedPlayers[index],
+          score: updatedPlayers[index].score - 1
+        };
       }
       return updatedPlayers;
     });
   };
+  
 
   return (
     <div className="container mt-5">
