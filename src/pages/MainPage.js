@@ -5,7 +5,10 @@ const MainPage = () => {
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(''); // Variabele voor geselecteerde speler
   const [pointsToAdd, setPointsToAdd] = useState(0); // Variabele voor toe te voegen punten
-  
+  const [mostCardsPlayer, setMostCardsPlayer] = useState(''); // Variabele voor geselecteerde speler met meeste kaarten
+  const [mostSpadesPlayer, setMostSpadesPlayer] = useState(''); // Variabele voor geselecteerde speler met meeste schoppen
+  const [diamondsTenPlayer, setDiamondsTenPlayer] = useState(''); // Variabele voor geselecteerde speler met ♦10
+  const [spadesTwoPlayer, setSpadesTwoPlayer] = useState(''); // Variabele voor geselecteerde speler met ♠2
 
 
   const addPlayer = (name) => {
@@ -40,30 +43,51 @@ const MainPage = () => {
   };
 
   const addPointsToPlayer = () => {
-    if (selectedPlayer === '') {
-      alert('Selecteer een speler');
+    if (mostCardsPlayer === '' || mostSpadesPlayer === '' || diamondsTenPlayer === '' || spadesTwoPlayer === '') {
+      alert('Selecteer een speler voor elke situatie');
       return;
     }
 
+    // Voeg punten toe aan spelers voor elke situatie
     setPlayers(prevPlayers => {
       return prevPlayers.map(player => {
-        if (player.name === selectedPlayer) {
-          return {
-            ...player,
-            score: player.score + pointsToAdd
-          };
-        }
-        return player;
+        let scoreToAdd = 0;
+        if (player.name === mostCardsPlayer) scoreToAdd += 2;
+        if (player.name === mostSpadesPlayer) scoreToAdd += 2;
+        if (player.name === diamondsTenPlayer) scoreToAdd += 2;
+        if (player.name === spadesTwoPlayer) scoreToAdd += 1;
+
+        return {
+          ...player,
+          score: player.score + scoreToAdd
+        };
       });
     });
 
-    // Reset geselecteerde speler en punten toe te voegen
-    setSelectedPlayer('');
-    setPointsToAdd(0);
+    // Reset geselecteerde spelers
+    setMostCardsPlayer('');
+    setMostSpadesPlayer('');
+    setDiamondsTenPlayer('');
+    setSpadesTwoPlayer('');
+  };
+
+  const handleMostCardsPlayerChange = (e) => {
+    setMostCardsPlayer(e.target.value);
+  };
+
+  const handleMostSpadesPlayerChange = (e) => {
+    setMostSpadesPlayer(e.target.value);
+  };
+
+  const handleDiamondsTenPlayerChange = (e) => {
+    setDiamondsTenPlayer(e.target.value);
+  };
+
+  const handleSpadesTwoPlayerChange = (e) => {
+    setSpadesTwoPlayer(e.target.value);
   };
 
   
-
   const showCardPoints = () => {
     alert("Kaartpunten:\n" +
       "meeste kaarten: 2\n" +
@@ -113,17 +137,35 @@ const MainPage = () => {
       </div>
 
       <div className="text-center mt-4">
-        {/* Knop voor het tonen van kaartpunten */}
-        <button className="btn btn-info mr-2" data-toggle="modal" data-target="#cardPointsModal">Toon Kaartpunten</button>
-        {/* Dropdown voor spelerselectie */}
-        <select className="form-control mr-2" value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
-          <option value="">Selecteer een speler</option>
+        <h2>Situaties:</h2>
+        {/* Dropdown voor "Meeste kaarten" situatie */}
+        <select className="form-control mb-2" value={mostCardsPlayer} onChange={handleMostCardsPlayerChange}>
+          <option value="">Selecteer een speler voor meeste kaarten</option>
           {players.map((player, index) => (
             <option key={index} value={player.name}>{player.name}</option>
           ))}
         </select>
-        {/* Input voor het toevoegen van punten */}
-        <input type="number" className="form-control mr-2" placeholder="Punten toevoegen" value={pointsToAdd} onChange={(e) => setPointsToAdd(parseInt(e.target.value))} />
+        {/* Dropdown voor "Meeste schoppen" situatie */}
+        <select className="form-control mb-2" value={mostSpadesPlayer} onChange={handleMostSpadesPlayerChange}>
+          <option value="">Selecteer een speler voor meeste schoppen</option>
+          {players.map((player, index) => (
+            <option key={index} value={player.name}>{player.name}</option>
+          ))}
+        </select>
+        {/* Dropdown voor "♦10 in bezit" situatie */}
+        <select className="form-control mb-2" value={diamondsTenPlayer} onChange={handleDiamondsTenPlayerChange}>
+          <option value="">Selecteer een speler voor ♦10 in bezit</option>
+          {players.map((player, index) => (
+            <option key={index} value={player.name}>{player.name}</option>
+          ))}
+        </select>
+        {/* Dropdown voor "♠2 in bezit" situatie */}
+        <select className="form-control mb-2" value={spadesTwoPlayer} onChange={handleSpadesTwoPlayerChange}>
+          <option value="">Selecteer een speler voor ♠2 in bezit</option>
+          {players.map((player, index) => (
+            <option key={index} value={player.name}>{player.name}</option>
+          ))}
+        </select>
         {/* Knop voor het toevoegen van punten */}
         <button className="btn btn-success" onClick={addPointsToPlayer}>Volgende Ronde</button>
       </div>
