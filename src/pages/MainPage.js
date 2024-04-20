@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dropdown from '../components/Dropdown';
+import PlayerList from '../components/PlayerList';
 
 
 const MainPage = () => {
@@ -42,7 +43,7 @@ const MainPage = () => {
       return updatedPlayers;
     });
   };
-  
+
   const decreaseScore = (index) => {
     setPlayers(prevPlayers => {
       const updatedPlayers = [...prevPlayers];
@@ -62,7 +63,7 @@ const MainPage = () => {
       setMissingDropdowns(['meeste kaarten', 'meeste schoppen', '♦10 in bezit', '♠2 in bezit']);
       return; // Stop de functie als niet alle dropdowns zijn ingevuld
     }
-  
+
     // Voeg punten toe aan spelers voor elke situatie
     setPlayers(prevPlayers => {
       return prevPlayers.map(player => {
@@ -71,26 +72,26 @@ const MainPage = () => {
         if (player.name === mostSpadesPlayer) scoreToAdd += 2;
         if (player.name === diamondsTenPlayer) scoreToAdd += 2;
         if (player.name === spadesTwoPlayer) scoreToAdd += 1;
-  
+
         return {
           ...player,
           score: player.score + scoreToAdd
         };
       });
     });
-  
+
     // Reset geselecteerde spelers
     setMostCardsPlayer('');
     setMostSpadesPlayer('');
     setDiamondsTenPlayer('');
     setSpadesTwoPlayer('');
-  
+
     // Controleer opnieuw of alle dropdowns zijn ingevuld na het toevoegen van punten
     if (!validateDropdowns()) {
       return; // Stop de functie als niet alle dropdowns zijn ingevuld
     }
   };
-  
+
   const validateDropdowns = () => {
     const missing = [];
     if (mostCardsPlayer === '') missing.push('meeste kaarten');
@@ -98,15 +99,15 @@ const MainPage = () => {
     if (diamondsTenPlayer === '') missing.push('♦10 in bezit');
     if (spadesTwoPlayer === '') missing.push('♠2 in bezit');
     setMissingDropdowns(missing);
-  
+
     // Reset de lijst met ontbrekende dropdowns als alle dropdowns zijn ingevuld
     if (missing.length === 0) {
       setMissingDropdowns([]);
     }
-  
+
     return missing.length === 0;
   };
-    
+
   const showCardPoints = () => {
     alert("Kaartpunten:\n" +
       "meeste kaarten: 2\n" +
@@ -115,81 +116,53 @@ const MainPage = () => {
       "♠2 :1\n" +
       "elke A kaart:1");
   };
-  
-  
+
+
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Wippen Score Tracker</h1>
-      <div>
-        <h2>Spelers:</h2>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          const playerName = e.target.elements.playerName.value;
-          addPlayer(playerName);
-          e.target.elements.playerName.value = '';
-        }}>
-          <div className="input-group mb-3">
-            <input type="text" className={`form-control ${playerNameError ? 'is-invalid' : ''}`} name="playerName" placeholder="Voeg speler toe" />
-            <div className="input-group-append">
-              <button className="btn btn-primary" type="submit">Toevoegen</button>
-            </div>
-            {playerNameError && <div className="invalid-feedback">Voer een geldige naam in voor de speler.</div>}
-          </div>
-        </form>
+       {/* PlayerList-component */}
+       <PlayerList
+          players={players}
+          increaseScore={increaseScore}
+          decreaseScore={decreaseScore}
+          addPlayer={addPlayer}
+          playerNameError={playerNameError}
+      />
 
-        {players.map((player, index) => (
-          <div key={index} className="mb-2">
-            <div className="row">
-              <div className="col">
-                <span>{player.name}</span>
-              </div>
-              <div className="col">
-                <span>Score: {player.score}</span>
-              </div>
-              <div className="col">
-                <button className="btn btn-success" onClick={() => increaseScore(index)}>+</button>
-                <button className="btn btn-danger" onClick={() => decreaseScore(index)}>-</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <div className="text-center mt-4">
-  
-  <div className="row">
-    <div className="col">
-      <h4>Meeste kaarten:</h4>
-      <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} />
-    </div>
-    <div className="col">
-      <h4>Meeste ♠kaarten:</h4>
-      <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} />
-    </div>
-  </div>
-  <div className="row">
-    <div className="col">
-      <h4>♦10 in bezit:</h4>
-      <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} />
-    </div>
-    <div className="col">
-      <h4>♠2 in bezit:</h4>
-      <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} />
-    </div>
-  </div>
 
+        <div className="row">
+          <div className="col">
+            <h5>Meeste kaarten:</h5>
+            <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} />
+          </div>
+          <div className="col">
+            <h5>Meeste ♠kaarten:</h5>
+            <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <h4>♦10 in bezit:</h4>
+            <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} />
+          </div>
+          <div className="col">
+            <h4>♠2 in bezit:</h4>
+            <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} />
+          </div>
+        </div>
 
-
-        
         <button className="btn btn-success" onClick={addPointsToPlayer}>Volgende Ronde</button>
       </div>
 
 
 
       <div className="text-center mt-4">
-      <button className="btn btn-info" onClick={showCardPoints}>Toon Kaartpunten</button>
-    </div>
+        <button className="btn btn-info" onClick={showCardPoints}>Toon Kaartpunten</button>
+      </div>
     </div>
   );
 };
