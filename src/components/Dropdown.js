@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Dropdown = ({ title, players, selectedPlayer, onChange, missing }) => {
+const Dropdown = ({ title, players, selectedPlayer, onChange, missing, points }) => {
   return (
     <div className="mb-2">
       <select className={`form-control ${missing && !selectedPlayer ? 'border border-danger' : ''}`} value={selectedPlayer} onChange={onChange}>
-        <option value="">{``}</option>
+        <option value="">{`+${points}`}</option>
         {players.map((player, index) => (
           <option key={index} value={player.name}>{player.name}</option>
         ))}
