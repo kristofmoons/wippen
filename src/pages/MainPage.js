@@ -84,33 +84,29 @@ const MainPage = () => {
     setMostSpadesPlayer('');
     setDiamondsTenPlayer('');
     setSpadesTwoPlayer('');
-  };
-
-  const handleMostCardsPlayerChange = (e) => {
-    const selectedPlayer = e.target.value;
-    setMostCardsPlayer(selectedPlayer);
-    setMissingDropdowns(prevMissingDropdowns => prevMissingDropdowns.filter(item => item !== 'meeste kaarten'));
-  };
-
-  const handleMostSpadesPlayerChange = (e) => {
-    const selectedPlayer = e.target.value;
-    setMostSpadesPlayer(selectedPlayer);
-    setMissingDropdowns(prevMissingDropdowns => prevMissingDropdowns.filter(item => item !== 'meeste schoppen'));
-  };
-
-  const handleDiamondsTenPlayerChange = (e) => {
-    const selectedPlayer = e.target.value;
-    setDiamondsTenPlayer(selectedPlayer);
-    setMissingDropdowns(prevMissingDropdowns => prevMissingDropdowns.filter(item => item !== '♦10 in bezit'));
-  };
-
-  const handleSpadesTwoPlayerChange = (e) => {
-    const selectedPlayer = e.target.value;
-    setSpadesTwoPlayer(selectedPlayer);
-    setMissingDropdowns(prevMissingDropdowns => prevMissingDropdowns.filter(item => item !== '♠2 in bezit'));
-  };
-
   
+    // Controleer opnieuw of alle dropdowns zijn ingevuld na het toevoegen van punten
+    if (!validateDropdowns()) {
+      return; // Stop de functie als niet alle dropdowns zijn ingevuld
+    }
+  };
+  
+  const validateDropdowns = () => {
+    const missing = [];
+    if (mostCardsPlayer === '') missing.push('meeste kaarten');
+    if (mostSpadesPlayer === '') missing.push('meeste schoppen');
+    if (diamondsTenPlayer === '') missing.push('♦10 in bezit');
+    if (spadesTwoPlayer === '') missing.push('♠2 in bezit');
+    setMissingDropdowns(missing);
+  
+    // Reset de lijst met ontbrekende dropdowns als alle dropdowns zijn ingevuld
+    if (missing.length === 0) {
+      setMissingDropdowns([]);
+    }
+  
+    return missing.length === 0;
+  };
+    
   const showCardPoints = () => {
     alert("Kaartpunten:\n" +
       "meeste kaarten: 2\n" +
