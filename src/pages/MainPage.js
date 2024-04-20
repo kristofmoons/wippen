@@ -3,6 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MainPage = () => {
   const [players, setPlayers] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(''); // Variabele voor geselecteerde speler
+  const [pointsToAdd, setPointsToAdd] = useState(0); // Variabele voor toe te voegen punten
+  
+
 
   const addPlayer = (name) => {
     setPlayers(prevPlayers => [
@@ -34,6 +38,31 @@ const MainPage = () => {
       return updatedPlayers;
     });
   };
+
+  const addPointsToPlayer = () => {
+    if (selectedPlayer === '') {
+      alert('Selecteer een speler');
+      return;
+    }
+
+    setPlayers(prevPlayers => {
+      return prevPlayers.map(player => {
+        if (player.name === selectedPlayer) {
+          return {
+            ...player,
+            score: player.score + pointsToAdd
+          };
+        }
+        return player;
+      });
+    });
+
+    // Reset geselecteerde speler en punten toe te voegen
+    setSelectedPlayer('');
+    setPointsToAdd(0);
+  };
+
+  
 
   const showCardPoints = () => {
     alert("Kaartpunten:\n" +
@@ -81,6 +110,22 @@ const MainPage = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="text-center mt-4">
+        {/* Knop voor het tonen van kaartpunten */}
+        <button className="btn btn-info mr-2" data-toggle="modal" data-target="#cardPointsModal">Toon Kaartpunten</button>
+        {/* Dropdown voor spelerselectie */}
+        <select className="form-control mr-2" value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
+          <option value="">Selecteer een speler</option>
+          {players.map((player, index) => (
+            <option key={index} value={player.name}>{player.name}</option>
+          ))}
+        </select>
+        {/* Input voor het toevoegen van punten */}
+        <input type="number" className="form-control mr-2" placeholder="Punten toevoegen" value={pointsToAdd} onChange={(e) => setPointsToAdd(parseInt(e.target.value))} />
+        {/* Knop voor het toevoegen van punten */}
+        <button className="btn btn-success" onClick={addPointsToPlayer}>Volgende Ronde</button>
       </div>
 
       <div className="text-center mt-4">
