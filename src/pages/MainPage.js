@@ -9,13 +9,22 @@ const MainPage = () => {
   const [mostSpadesPlayer, setMostSpadesPlayer] = useState(''); // Variabele voor geselecteerde speler met meeste schoppen
   const [diamondsTenPlayer, setDiamondsTenPlayer] = useState(''); // Variabele voor geselecteerde speler met ♦10
   const [spadesTwoPlayer, setSpadesTwoPlayer] = useState(''); // Variabele voor geselecteerde speler met ♠2
+  const [playerNameError, setPlayerNameError] = useState(false); // Variabele om aan te geven of er een fout is opgetreden bij het toevoegen van een speler
+
 
 
   const addPlayer = (name) => {
+    // Controleer of de naam niet leeg is
+    if (name.trim() === '') {
+      setPlayerNameError(true);
+      return;
+    }
+
     setPlayers(prevPlayers => [
       ...prevPlayers,
       { name: name, score: 0 }
     ]);
+    setPlayerNameError(false); // Reset de foutmelding
   };
 
   const increaseScore = (index) => {
@@ -111,10 +120,11 @@ const MainPage = () => {
           e.target.elements.playerName.value = '';
         }}>
           <div className="input-group mb-3">
-            <input type="text" className="form-control" name="playerName" placeholder="Voeg speler toe" />
+            <input type="text" className={`form-control ${playerNameError ? 'is-invalid' : ''}`} name="playerName" placeholder="Voeg speler toe" />
             <div className="input-group-append">
               <button className="btn btn-primary" type="submit">Toevoegen</button>
             </div>
+            {playerNameError && <div className="invalid-feedback">Voer een geldige naam in voor de speler.</div>}
           </div>
         </form>
 
