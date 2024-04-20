@@ -4,7 +4,7 @@ const Dropdown = ({ title, players, selectedPlayer, onChange, missing }) => {
   return (
     <div className="mb-2">
       <select className={`form-control ${missing && !selectedPlayer ? 'border border-danger' : ''}`} value={selectedPlayer} onChange={onChange}>
-        <option value="">{`Selecteer een speler voor ${title}`}</option>
+        <option value="">{``}</option>
         {players.map((player, index) => (
           <option key={index} value={player.name}>{player.name}</option>
         ))}

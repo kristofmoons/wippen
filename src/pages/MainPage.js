@@ -157,11 +157,31 @@ const MainPage = () => {
       </div>
 
       <div className="text-center mt-4">
-        <h2>Situaties:</h2>
-        <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} />
-        <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} />
-        <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} />
-        <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} />
+  
+  <div className="row">
+    <div className="col">
+      <h4>Meeste kaarten:</h4>
+      <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} />
+    </div>
+    <div className="col">
+      <h4>Meeste ♠kaarten:</h4>
+      <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} />
+    </div>
+  </div>
+  <div className="row">
+    <div className="col">
+      <h4>♦10 in bezit:</h4>
+      <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} />
+    </div>
+    <div className="col">
+      <h4>♠2 in bezit:</h4>
+      <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} />
+    </div>
+  </div>
+
+
+
+        
         <button className="btn btn-success" onClick={addPointsToPlayer}>Volgende Ronde</button>
       </div>
 
