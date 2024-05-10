@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/wippen/static/css/main.db62923b.css",
-    "main.js": "/wippen/static/js/main.b250e326.js",
+    "main.js": "/wippen/static/js/main.ad504ad3.js",
     "static/js/453.d445dfdf.chunk.js": "/wippen/static/js/453.d445dfdf.chunk.js",
     "index.html": "/wippen/index.html",
     "main.db62923b.css.map": "/wippen/static/css/main.db62923b.css.map",
-    "main.b250e326.js.map": "/wippen/static/js/main.b250e326.js.map",
+    "main.ad504ad3.js.map": "/wippen/static/js/main.ad504ad3.js.map",
     "453.d445dfdf.chunk.js.map": "/wippen/static/js/453.d445dfdf.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.db62923b.css",
-    "static/js/main.b250e326.js"
+    "static/js/main.ad504ad3.js"
   ]
 }
