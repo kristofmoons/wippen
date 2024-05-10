@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dropdown from '../components/Dropdown';
 import PlayerList from '../components/PlayerList';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 
 const MainPage = () => {
@@ -16,6 +18,11 @@ const MainPage = () => {
   const [heartsAcePlayer, setHeartsAcePlayer] = useState('');
   const [diamondsAcePlayer, setDiamondsAcePlayer] = useState('');
   const [clubsAcePlayer, setClubsAcePlayer] = useState('');
+  const [show, setShow] = useState(false);
+
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const addPlayer = (name) => {
     if (name.trim() === '') {
@@ -84,7 +91,7 @@ const MainPage = () => {
       ]);
       return; // Stop de functie als niet alle dropdowns zijn ingevuld
     }
-  
+
     // Voeg punten toe aan spelers voor elke situatie, inclusief de Aas-kaarten
     setPlayers(prevPlayers => {
       return prevPlayers.map(player => {
@@ -104,7 +111,7 @@ const MainPage = () => {
         };
       });
     });
-  
+
     // Reset geselecteerde spelers
     setMostCardsPlayer('');
     setMostSpadesPlayer('');
@@ -114,13 +121,13 @@ const MainPage = () => {
     setHeartsAcePlayer('');
     setDiamondsAcePlayer('');
     setClubsAcePlayer('');
-  
+
     // Controleer opnieuw of alle dropdowns zijn ingevuld na het toevoegen van punten
     if (!validateDropdowns()) {
       return; // Stop de functie als niet alle dropdowns zijn ingevuld
     }
   };
-  
+
 
   const validateDropdowns = () => {
     const missing = [];
@@ -133,16 +140,16 @@ const MainPage = () => {
     if (diamondsAcePlayer === '') missing.push('Ruiten A');
     if (clubsAcePlayer === '') missing.push('Klaveren A');
     setMissingDropdowns(missing);
-  
+
     // Reset de lijst met ontbrekende dropdowns als alle dropdowns zijn ingevuld
     if (missing.length === 0) {
       setMissingDropdowns([]);
     }
-  
+
     return missing.length === 0;
   };
-  
-  
+
+
 
   const handleSpadesAcePlayerChange = (e) => {
     const selectedPlayer = e.target.value;
@@ -179,66 +186,108 @@ const MainPage = () => {
     setPlayers(updatedPlayers);
   };
 
+  const areAllDropdownsFilled = () => {
+    // Check if any dropdown is missing a selection
+    const anyDropdownMissing = (
+      mostCardsPlayer === '' ||
+      mostSpadesPlayer === '' ||
+      diamondsTenPlayer === '' ||
+      spadesTwoPlayer === '' ||
+      spadesAcePlayer === '' ||
+      heartsAcePlayer === '' ||
+      diamondsAcePlayer === '' ||
+      clubsAcePlayer === ''
+    );
+  
+    // Return true if no dropdowns are missing a selection
+    return !anyDropdownMissing;
+  };
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Wippen Score Tracker</h1>
-       {/* PlayerList-component */}
-       <PlayerList
-          players={players}
-          increaseScore={increaseScore}
-          decreaseScore={decreaseScore}
-          addPlayer={addPlayer}
-          playerNameError={playerNameError}
+      {/* PlayerList-component */}
+      <PlayerList
+        players={players}
+        increaseScore={increaseScore}
+        decreaseScore={decreaseScore}
+        addPlayer={addPlayer}
+        playerNameError={playerNameError}
       />
 
+      <Button variant="primary" onClick={handleShow}>
+        einde Ronde
+      </Button>
 
-<div className="text-center mt-4">
-  <h2>Situaties:</h2>
 
-  <div className='row'>
-  <div className="col">
-      <h5>Meeste kaarten:</h5>
-      <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} points={2} />
-    </div>
-    <div className="col">
-      <h5>Meeste ♠kaarten:</h5>
-      <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} points={2} />
-    </div>
-  </div>
-  <div className='row'>
-    <div className="col">
-      <h5>♦10 in bezit:</h5>
-      <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} points={2} />
-    </div>
-    <div className="col">
-      <h5>♠2 in bezit:</h5>
-      <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} points={1} />
-    </div>
-  </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>score toevoegen</Modal.Title>
+        </Modal.Header>
 
-  <div className='row'>
-    <div className="col">
-      <h5>♠A:</h5>
-      <Dropdown title="Schoppen A" players={players} selectedPlayer={spadesAcePlayer} onChange={(e) => handleDropdownChange(e, setSpadesAcePlayer, 'Schoppen A')} missing={missingDropdowns.includes('Schoppen A')} points={1} />
-    </div>
-    <div className="col">
-      <h5>♥A:</h5>
-      <Dropdown title="Harten A" players={players} selectedPlayer={heartsAcePlayer} onChange={(e) => handleDropdownChange(e, setHeartsAcePlayer, 'Harten A')} missing={missingDropdowns.includes('Harten A')} points={1} />
-    </div>
-  </div>
-  <div className='row'>
-    <div className="col">
-      <h5>♦A:</h5>
-      <Dropdown title="Ruiten A" players={players} selectedPlayer={diamondsAcePlayer} onChange={(e) => handleDropdownChange(e, setDiamondsAcePlayer, 'Ruiten A')} missing={missingDropdowns.includes('Ruiten A')} points={1} />
-    </div>
-    <div className="col">
-      <h5>♣A:</h5>
-      <Dropdown title="Klaveren A" players={players} selectedPlayer={clubsAcePlayer} onChange={(e) => handleDropdownChange(e, setClubsAcePlayer, 'Klaveren A')} missing={missingDropdowns.includes('Klaveren A')} points={1} />
-    </div>
-  </div>
-  <button className="btn btn-success" onClick={addPointsToPlayer}>Volgende Ronde</button>
-</div>
+
+        <Modal.Body>
+          <div className="text-center mt-4">
+            <div className='row'>
+              <div className="col">
+                <h5>Meeste kaarten:</h5>
+                <Dropdown title="meeste kaarten" players={players} selectedPlayer={mostCardsPlayer} onChange={(e) => handleDropdownChange(e, setMostCardsPlayer, 'meeste kaarten')} missing={missingDropdowns.includes('meeste kaarten')} points={2} />
+              </div>
+              <div className="col">
+                <h5>Meeste ♠:</h5>
+                <Dropdown title="meeste schoppen" players={players} selectedPlayer={mostSpadesPlayer} onChange={(e) => handleDropdownChange(e, setMostSpadesPlayer, 'meeste schoppen')} missing={missingDropdowns.includes('meeste schoppen')} points={2} />
+              </div>
+            </div>
+            <div className='row'>
+              <div className="col">
+                <h5>♦10 in bezit:</h5>
+                <Dropdown title="♦10 in bezit" players={players} selectedPlayer={diamondsTenPlayer} onChange={(e) => handleDropdownChange(e, setDiamondsTenPlayer, '♦10 in bezit')} missing={missingDropdowns.includes('♦10 in bezit')} points={2} />
+              </div>
+              <div className="col">
+                <h5>♠2 in bezit:</h5>
+                <Dropdown title="♠2 in bezit" players={players} selectedPlayer={spadesTwoPlayer} onChange={(e) => handleDropdownChange(e, setSpadesTwoPlayer, '♠2 in bezit')} missing={missingDropdowns.includes('♠2 in bezit')} points={1} />
+              </div>
+            </div>
+
+            <div className='row'>
+              <div className="col">
+                <h5>♠A:</h5>
+                <Dropdown title="Schoppen A" players={players} selectedPlayer={spadesAcePlayer} onChange={(e) => handleDropdownChange(e, setSpadesAcePlayer, 'Schoppen A')} missing={missingDropdowns.includes('Schoppen A')} points={1} />
+              </div>
+              <div className="col">
+                <h5>♥A:</h5>
+                <Dropdown title="Harten A" players={players} selectedPlayer={heartsAcePlayer} onChange={(e) => handleDropdownChange(e, setHeartsAcePlayer, 'Harten A')} missing={missingDropdowns.includes('Harten A')} points={1} />
+              </div>
+            </div>
+            <div className='row'>
+              <div className="col">
+                <h5>♦A:</h5>
+                <Dropdown title="Ruiten A" players={players} selectedPlayer={diamondsAcePlayer} onChange={(e) => handleDropdownChange(e, setDiamondsAcePlayer, 'Ruiten A')} missing={missingDropdowns.includes('Ruiten A')} points={1} />
+              </div>
+              <div className="col">
+                <h5>♣A:</h5>
+                <Dropdown title="Klaveren A" players={players} selectedPlayer={clubsAcePlayer} onChange={(e) => handleDropdownChange(e, setClubsAcePlayer, 'Klaveren A')} missing={missingDropdowns.includes('Klaveren A')} points={1} />
+              </div>
+            </div>
+          </div>
+
+        </Modal.Body>
+
+        <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>Sluiten</Button>
+        {/* Disable the button if any dropdown is missing a selection */}
+        <Button variant="danger" onClick={() => { handleClose(); addPointsToPlayer(); }} disabled={!areAllDropdownsFilled()}>
+  Volgende Ronde
+</Button>
+
+      </Modal.Footer>
+      </Modal>
+
+
+
+
+
+
     </div>
   );
 };
