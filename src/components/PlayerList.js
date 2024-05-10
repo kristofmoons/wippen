@@ -1,11 +1,12 @@
-// PlayerList.js
-
 import React from 'react';
 
-const PlayerList = ({ players, increaseScore, decreaseScore, addPlayer, playerNameError }) => {
+const PlayerList = ({ players, increaseScore, decreaseScore, addPlayer, playerNameError, restartGame, nextRound }) => {
   return (
-    <div>
-      <h2>Spelers:</h2>
+    <div className="card">
+      <div className="card-header d-flex justify-content-between align-items-center">
+        <h5 className="mb-0">Score Board</h5>
+        <button className="btn btn-outline-danger" onClick={restartGame}>Restart Game</button>
+      </div>
       <form onSubmit={(e) => {
         e.preventDefault();
         const playerName = e.target.elements.playerName.value;
@@ -20,23 +21,25 @@ const PlayerList = ({ players, increaseScore, decreaseScore, addPlayer, playerNa
           {playerNameError && <div className="invalid-feedback">Voer een geldige naam in voor de speler.</div>}
         </div>
       </form>
-      
-      {players.map((player, index) => (
-        <div key={index} className="mb-2">
-          <div className="row">
-            <div className="col">
-              <span>{player.name}</span>
+      <div className="card-body">
+        {players.length > 0 ? (
+          players.map((player, index) => (
+            <div key={index} className="mb-2 d-flex align-items-center">
+              <div className="mr-4" style={{ minWidth: '100px' }}>{player.name}</div>
+              <div className="mx-auto">{player.score}</div>
+              <div className="ml-auto">
+                <button className="btn btn-danger mr-1" onClick={() => decreaseScore(index)}>-</button>
+                <button className="btn btn-success" onClick={() => increaseScore(index)}>+</button>
+              </div>
             </div>
-            <div className="col">
-              <span>Score: {player.score}</span>
-            </div>
-            <div className="col">
-              <button className="btn btn-success" onClick={() => increaseScore(index)}>+</button>
-              <button className="btn btn-danger" onClick={() => decreaseScore(index)}>-</button>
-            </div>
-          </div>
-        </div>
-      ))}
+          ))
+        ) : (
+          <p>No players added yet.</p>
+        )}
+      </div>
+      <div className="card-footer">
+        <button className="btn btn-primary" onClick={nextRound}>Volgende Ronde</button>
+      </div>
     </div>
   );
 };

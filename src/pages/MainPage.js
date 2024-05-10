@@ -37,6 +37,10 @@ const MainPage = () => {
     setPlayerNameError(false);
   };
 
+  const restartGame = () => {
+    setPlayers([]); // Set the players state to an empty array
+  };
+
   const handleDropdownChange = (e, setter, situation) => {
     const selectedPlayer = e.target.value;
     setter(selectedPlayer);
@@ -206,6 +210,8 @@ const MainPage = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Wippen Score Tracker</h1>
+
+
       {/* PlayerList-component */}
       <PlayerList
         players={players}
@@ -213,13 +219,10 @@ const MainPage = () => {
         decreaseScore={decreaseScore}
         addPlayer={addPlayer}
         playerNameError={playerNameError}
+        restartGame={restartGame}
+        nextRound={handleShow}
       />
-
-      <Button variant="primary" onClick={handleShow}>
-        einde Ronde
-      </Button>
-
-
+    
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>score toevoegen</Modal.Title>
@@ -282,11 +285,6 @@ const MainPage = () => {
 
       </Modal.Footer>
       </Modal>
-
-
-
-
-
 
     </div>
   );
