@@ -78,7 +78,7 @@ const MainPage = () => {
           {players.length > 0 ? (
             <table className="table table-striped">
               <thead>
-                <tr>
+                <tr className="border">
                   <th scope="col">Naam</th>
                   <th scope="col" className="text-center">
                     Score
@@ -87,7 +87,7 @@ const MainPage = () => {
               </thead>
               <tbody>
                 {players.map((player, index) => (
-                  <tr key={index}>
+                  <tr key={index} className="border">
                     <td>{player.name}</td>
                     <td className="text-center">{player.score}</td>
                   </tr>
