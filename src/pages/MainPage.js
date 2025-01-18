@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ScoreModal from "../components/ScoreModal";
 import RoundModal from "../components/RoundModal";
@@ -13,6 +13,14 @@ const MainPage = () => {
   const [rounds, setRounds] = useState([]);
   const [selectedRound, setSelectedRound] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setDarkMode(prefersDarkMode);
+    if (prefersDarkMode) {
+      document.body.classList.add("dark-mode");
+    }
+  }, []);
 
   const addPlayer = (name) => {
     if (name.trim() === "") {
