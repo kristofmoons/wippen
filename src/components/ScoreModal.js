@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Dropdown from "./Dropdown";
 
-const ScoreModal = ({ show, handleClose, players, setPlayers }) => {
+const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
   const [mostCardsPlayer, setMostCardsPlayer] = useState(null);
   const [mostSpadesPlayer, setMostSpadesPlayer] = useState(null);
   const [diamondTenPlayer, setDiamondTenPlayer] = useState(null);
@@ -63,40 +63,53 @@ const ScoreModal = ({ show, handleClose, players, setPlayers }) => {
   const handleSaveScores = () => {
     if (!validateFields()) return;
 
-    setPlayers((prevPlayers) => {
-      return prevPlayers.map((player) => {
-        let newScore = player.score;
-        if (mostCardsPlayer && player.name === mostCardsPlayer.name) {
-          newScore += 2;
-        }
-        if (mostSpadesPlayer && player.name === mostSpadesPlayer.name) {
-          newScore += 2;
-        }
-        if (diamondTenPlayer && player.name === diamondTenPlayer.name) {
-          newScore += 2;
-        }
-        if (spadeTwoPlayer && player.name === spadeTwoPlayer.name) {
-          newScore += 1;
-        }
-        if (spadeAcePlayer && player.name === spadeAcePlayer.name) {
-          newScore += 1;
-        }
-        if (heartAcePlayer && player.name === heartAcePlayer.name) {
-          newScore += 1;
-        }
-        if (diamondAcePlayer && player.name === diamondAcePlayer.name) {
-          newScore += 1;
-        }
-        if (clubAcePlayer && player.name === clubAcePlayer.name) {
-          newScore += 1;
-        }
-        const playerWhip = whips.find((whip) => whip.name === player.name);
-        if (playerWhip) {
-          newScore += playerWhip.whips;
-        }
-        return { ...player, score: newScore };
-      });
+    const updatedPlayers = players.map((player) => {
+      let newScore = player.score;
+      if (mostCardsPlayer && player.name === mostCardsPlayer.name) {
+        newScore += 2;
+      }
+      if (mostSpadesPlayer && player.name === mostSpadesPlayer.name) {
+        newScore += 2;
+      }
+      if (diamondTenPlayer && player.name === diamondTenPlayer.name) {
+        newScore += 2;
+      }
+      if (spadeTwoPlayer && player.name === spadeTwoPlayer.name) {
+        newScore += 1;
+      }
+      if (spadeAcePlayer && player.name === spadeAcePlayer.name) {
+        newScore += 1;
+      }
+      if (heartAcePlayer && player.name === heartAcePlayer.name) {
+        newScore += 1;
+      }
+      if (diamondAcePlayer && player.name === diamondAcePlayer.name) {
+        newScore += 1;
+      }
+      if (clubAcePlayer && player.name === clubAcePlayer.name) {
+        newScore += 1;
+      }
+      const playerWhip = whips.find((whip) => whip.name === player.name);
+      if (playerWhip) {
+        newScore += playerWhip.whips;
+      }
+      return { ...player, score: newScore };
     });
+
+    const roundDetails = {
+      mostCardsPlayer: mostCardsPlayer ? mostCardsPlayer.name : null,
+      mostSpadesPlayer: mostSpadesPlayer ? mostSpadesPlayer.name : null,
+      diamondTenPlayer: diamondTenPlayer ? diamondTenPlayer.name : null,
+      spadeTwoPlayer: spadeTwoPlayer ? spadeTwoPlayer.name : null,
+      spadeAcePlayer: spadeAcePlayer ? spadeAcePlayer.name : null,
+      heartAcePlayer: heartAcePlayer ? heartAcePlayer.name : null,
+      diamondAcePlayer: diamondAcePlayer ? diamondAcePlayer.name : null,
+      clubAcePlayer: clubAcePlayer ? clubAcePlayer.name : null,
+      whips: whips.filter((whip) => whip.whips > 0),
+    };
+
+    setPlayers(updatedPlayers);
+    addRound({ players: updatedPlayers, details: roundDetails });
     handleClose();
   };
 

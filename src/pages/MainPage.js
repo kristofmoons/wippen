@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ScoreModal from "../components/ScoreModal";
+import RoundModal from "../components/RoundModal";
 
 const MainPage = () => {
   const [players, setPlayers] = useState([]);
   const [playerNameError, setPlayerNameError] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [showRoundModal, setShowRoundModal] = useState(false);
+  const [rounds, setRounds] = useState([]);
+  const [selectedRound, setSelectedRound] = useState(null);
 
   const addPlayer = (name) => {
     if (name.trim() === "") {
@@ -27,6 +31,7 @@ const MainPage = () => {
 
   const restartGame = () => {
     setPlayers([]);
+    setRounds([]);
   };
 
   const handleShowScoreModal = () => {
@@ -37,6 +42,18 @@ const MainPage = () => {
     setShowScoreModal(false);
   };
 
+  const handleShowRoundModal = () => {
+    setShowRoundModal(true);
+  };
+
+  const handleCloseRoundModal = () => {
+    setShowRoundModal(false);
+  };
+
+  const addRound = (roundDetails) => {
+    setRounds((prevRounds) => [...prevRounds, roundDetails]);
+  };
+  
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Wippen Score Tracker</h1>
@@ -78,7 +95,7 @@ const MainPage = () => {
           {players.length > 0 ? (
             <table className="table table-striped">
               <thead>
-                <tr className="border">
+                <tr>
                   <th scope="col">Naam</th>
                   <th scope="col" className="text-center">
                     Score
@@ -87,7 +104,7 @@ const MainPage = () => {
               </thead>
               <tbody>
                 {players.map((player, index) => (
-                  <tr key={index} className="border">
+                  <tr key={index}>
                     <td>{player.name}</td>
                     <td className="text-center">{player.score}</td>
                   </tr>
@@ -95,13 +112,17 @@ const MainPage = () => {
               </tbody>
             </table>
           ) : (
-            <p className="text-center">nog niemand toegevoegd</p>
+            <p className="text-center">No players added yet.</p>
           )}
         </div>
-        <div className="card-footer d-flex justify-content-between">
+        <div className="card-footer d-flex justify-content-between"> 
+           <button className="btn btn-secondary" onClick={handleShowRoundModal}>
+            Bekijk Rondes
+          </button>
           <button className="btn btn-primary" onClick={handleShowScoreModal}>
             Volgende Ronde
           </button>
+        
         </div>
       </div>
       <ScoreModal
@@ -109,6 +130,14 @@ const MainPage = () => {
         handleClose={handleCloseScoreModal}
         players={players}
         setPlayers={setPlayers}
+        addRound={addRound}
+      />
+      <RoundModal
+        show={showRoundModal}
+        handleClose={handleCloseRoundModal}
+        rounds={rounds}
+        selectedRound={selectedRound}
+        setSelectedRound={setSelectedRound}
       />
     </div>
   );
