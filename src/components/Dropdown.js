@@ -1,15 +1,17 @@
 import React from 'react';
 
-const Dropdown = ({ title, players, selectedPlayer, onChange, missing, points }) => {
+const Dropdown = ({ title, players, selectedPlayer, onChange, className }) => {
   return (
-    <div className="mb-2">
-      <select className={`form-control ${missing && !selectedPlayer ? 'border border-danger' : ''}`} value={selectedPlayer} onChange={onChange}>
-        <option value="">{`+${points}`}</option>
+    <div className="form-group">
+      <label>{title}</label>
+      <select className={`form-control ${className}`} value={selectedPlayer} onChange={onChange}>
+        <option value=""></option>
         {players.map((player, index) => (
-          <option key={index} value={player.name}>{player.name}</option>
+          <option key={index} value={player.name}>
+            {player.name}
+          </option>
         ))}
       </select>
-      {missing && !selectedPlayer && <div className="text-danger">{`Selecteer een speler voor ${title}`}</div>}
     </div>
   );
 };
