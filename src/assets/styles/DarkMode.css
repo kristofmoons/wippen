@@ -114,3 +114,12 @@ body.dark-mode {
 .dark-mode .table-striped tbody tr:nth-of-type(even) {
   background-color: #333333;
 }
+
+.dark-mode .btn-outline-dark.active {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.dark-mode .btn-outline-dark:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
