@@ -4,23 +4,25 @@ import ScoreModal from "../components/ScoreModal";
 import RoundModal from "../components/RoundModal";
 import { FaMoon, FaSun } from "react-icons/fa"; 
 import "../assets/styles/DarkMode.css"; 
+import useLocalStorageState from 'use-local-storage-state';
 
 const MainPage = () => {
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useLocalStorageState('wippen_players', { defaultValue: [] });
+  const [rounds, setRounds] = useLocalStorageState('wippen_rounds', { defaultValue: [] });
+  const [darkMode, setDarkMode] = useLocalStorageState('wippen_darkMode', { 
+    defaultValue: typeof window !== 'undefined' 
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches 
+      : false,
+  });  
+
   const [playerNameError, setPlayerNameError] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [showRoundModal, setShowRoundModal] = useState(false);
-  const [rounds, setRounds] = useState([]);
   const [selectedRound, setSelectedRound] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setDarkMode(prefersDarkMode);
-    if (prefersDarkMode) {
-      document.body.classList.add("dark-mode");
-    }
-  }, []);
+    document.body.classList.toggle("dark-mode", darkMode);
+  }, [darkMode]);
 
   const addPlayer = (name) => {
     if (name.trim() === "") {
