@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import ScoreChart from "./ScoreChart";
 
 const RoundModal = ({
   show,
@@ -8,25 +9,37 @@ const RoundModal = ({
   selectedRound,
   setSelectedRound,
 }) => {
+  const [showChart, setShowChart] = useState(true);
+
   const handleRoundChange = (e) => {
-    const roundIndex = parseInt(e.target.value, 10);
-    setSelectedRound(rounds[roundIndex]);
+    const value = e.target.value;
+    
+    if (value === "chart") {
+      setShowChart(true);
+      setSelectedRound(null);
+    } else {
+      setShowChart(false);
+      const roundIndex = parseInt(value, 10);
+      setSelectedRound(rounds[roundIndex]);
+    }
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Bekijk Ronde</Modal.Title>
+        <Modal.Title>Rondes Overzicht</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="form-group">
-          <label htmlFor="roundSelect">Selecteer een ronde:</label>
+          <label htmlFor="roundSelect">Selecteer een ronde of bekijk grafiek:</label>
           <select
             id="roundSelect"
             className="form-control"
             onChange={handleRoundChange}
+            value={showChart ? "chart" : selectedRound ? rounds.indexOf(selectedRound) : ""}
           >
-            <option value="">Selecteer een ronde</option>
+            <option value="chart">Score Verloop (Grafiek)</option>
+            <option value="" disabled>--- Rondes ---</option>
             {rounds.map((round, index) => (
               <option key={index} value={index}>
                 Ronde {index + 1}
@@ -34,26 +47,36 @@ const RoundModal = ({
             ))}
           </select>
         </div>
-        {selectedRound && selectedRound.players && (
+
+        {showChart ? (
           <div className="mt-4">
-            <h5 className="text-center">Ronde Details</h5>
-            <table className="table table-bordered table-hover">
-              <thead className="thead-dark">
-                <tr>
-                  <th scope="col">Naam</th>
-                  <th scope="col" className="text-center">Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedRound.players.map((player, index) => (
-                  <tr key={index}>
-                    <td>{player.name}</td>
-                    <td className="text-center">{player.score}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {rounds.length > 0 ? (
+              <ScoreChart rounds={rounds} />
+            ) : (
+              <div className="alert alert-info">Nog geen rondes beschikbaar voor de grafiek.</div>
+            )}
+          </div>
+        ) : (
+          selectedRound && selectedRound.players && (
             <div className="mt-4">
+              <h5 className="text-center">Ronde Details</h5>
+              <table className="table table-bordered table-hover">
+                <thead className="thead-dark">
+                  <tr>
+                    <th scope="col">Naam</th>
+                    <th scope="col" className="text-center">Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedRound.players.map((player, index) => (
+                    <tr key={index}>
+                      <td>{player.name}</td>
+                      <td className="text-center">{player.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="mt-4">
               <h5 className="text-center">Details</h5>
               <ul className="list-group">
                 <li className="list-group-item d-flex justify-content-between">
@@ -104,7 +127,8 @@ const RoundModal = ({
                 </li>
               </ul>
             </div>
-          </div>
+            </div>
+          )
         )}
       </Modal.Body>
       <Modal.Footer>
