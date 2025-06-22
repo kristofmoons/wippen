@@ -92,11 +92,13 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
     const updatedPlayers = players.map((player) => {
       let newScore = player.score;
       if (mostCardsPlayers.some((p) => p.name === player.name)) {
-        newScore += 2;
+        newScore += mostCardsPlayers.length > 1 ? 1 : 2;
       }
+      
       if (mostSpadesPlayers.some((p) => p.name === player.name)) {
-        newScore += 2;
+        newScore += mostSpadesPlayers.length > 1 ? 1 : 2;
       }
+      
       if (diamondTenPlayer && player.name === diamondTenPlayer.name) {
         newScore += 2;
       }
