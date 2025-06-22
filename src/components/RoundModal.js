@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import ScoreChart from "./ScoreChart";
 
@@ -11,9 +11,16 @@ const RoundModal = ({
 }) => {
   const [showChart, setShowChart] = useState(true);
 
+  useEffect(() => {
+    if (show) {
+      setShowChart(true);
+      setSelectedRound(null);
+    }
+  }, [show, setSelectedRound]);
+
   const handleRoundChange = (e) => {
     const value = e.target.value;
-    
+
     if (value === "chart") {
       setShowChart(true);
       setSelectedRound(null);
@@ -31,15 +38,25 @@ const RoundModal = ({
       </Modal.Header>
       <Modal.Body>
         <div className="form-group">
-          <label htmlFor="roundSelect">Selecteer een ronde of bekijk grafiek:</label>
+          <label htmlFor="roundSelect">
+            Selecteer een ronde of bekijk grafiek:
+          </label>
           <select
             id="roundSelect"
             className="form-control"
             onChange={handleRoundChange}
-            value={showChart ? "chart" : selectedRound ? rounds.indexOf(selectedRound) : ""}
+            value={
+              showChart
+                ? "chart"
+                : selectedRound
+                ? rounds.indexOf(selectedRound)
+                : ""
+            }
           >
             <option value="chart">Score Verloop (Grafiek)</option>
-            <option value="" disabled>--- Rondes ---</option>
+            <option value="" disabled>
+              --- Rondes ---
+            </option>
             {rounds.map((round, index) => (
               <option key={index} value={index}>
                 Ronde {index + 1}
@@ -53,18 +70,23 @@ const RoundModal = ({
             {rounds.length > 0 ? (
               <ScoreChart rounds={rounds} />
             ) : (
-              <div className="alert alert-info">Nog geen rondes beschikbaar voor de grafiek.</div>
+              <div className="alert alert-info">
+                Nog geen rondes beschikbaar voor de grafiek.
+              </div>
             )}
           </div>
         ) : (
-          selectedRound && selectedRound.players && (
+          selectedRound &&
+          selectedRound.players && (
             <div className="mt-4">
               <h5 className="text-center">Ronde Details</h5>
               <table className="table table-bordered table-hover">
                 <thead className="thead-dark">
                   <tr>
                     <th scope="col">Naam</th>
-                    <th scope="col" className="text-center">Score</th>
+                    <th scope="col" className="text-center">
+                      Score
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,56 +99,68 @@ const RoundModal = ({
                 </tbody>
               </table>
               <div className="mt-4">
-              <h5 className="text-center">Details</h5>
-              <ul className="list-group">
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>Meeste kaarten:</span>
-                  <span>{selectedRound.details.mostCardsPlayers.join(', ')}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>Meeste ♠:</span>
-                  <span>{selectedRound.details.mostSpadesPlayers.join(', ')}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♦10:</span>
-                  <span>{selectedRound.details.diamondTenPlayer}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♠2:</span>
-                  <span>{selectedRound.details.spadeTwoPlayer}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♠A:</span>
-                  <span>{selectedRound.details.spadeAcePlayer}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♥A:</span>
-                  <span>{selectedRound.details.heartAcePlayer}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♦A:</span>
-                  <span>{selectedRound.details.diamondAcePlayer}</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between">
-                  <span>♣A:</span>
-                  <span>{selectedRound.details.clubAcePlayer}</span>
-                </li>
-                <li className="list-group-item">
-                  <h6 className="text-center">Wippen:</h6>
-                  <div>
-                    {selectedRound.details.whips && selectedRound.details.whips.length > 0 ? (
-                      selectedRound.details.whips.map((whip, index) => (
-                        <div key={index} className="list-group-item">
-                          {whip.name}: {whip.points}
-                        </div>
-                      ))
-                    ) : (
-                      <div>No bonus points available</div>
-                    )}
-                  </div>
-                </li>
-              </ul>
-            </div>
+                <h5 className="text-center">Details</h5>
+                <ul className="list-group">
+                  {[
+                    {
+                      label: "Meeste kaarten:",
+                      value: selectedRound.details.mostCardsPlayers.join(", "),
+                    },
+                    {
+                      label: "Meeste ♠:",
+                      value: selectedRound.details.mostSpadesPlayers.join(", "),
+                    },
+                    {
+                      label: "♦10:",
+                      value: selectedRound.details.diamondTenPlayer,
+                    },
+                    {
+                      label: "♠2:",
+                      value: selectedRound.details.spadeTwoPlayer,
+                    },
+                    {
+                      label: "♠A:",
+                      value: selectedRound.details.spadeAcePlayer,
+                    },
+                    {
+                      label: "♥A:",
+                      value: selectedRound.details.heartAcePlayer,
+                    },
+                    {
+                      label: "♦A:",
+                      value: selectedRound.details.diamondAcePlayer,
+                    },
+                    {
+                      label: "♣A:",
+                      value: selectedRound.details.clubAcePlayer,
+                    },
+                  ].map((item, index) => (
+                    <li
+                      key={index}
+                      className="list-group-item d-flex justify-content-between"
+                    >
+                      <span>{item.label}</span>
+                      <span>{item.value}</span>
+                    </li>
+                  ))}
+
+                  <li className="list-group-item">
+                    <h6 className="text-center">Wippen:</h6>
+                    <div>
+                      {selectedRound.details.whips &&
+                      selectedRound.details.whips.length > 0 ? (
+                        selectedRound.details.whips.map((whip, index) => (
+                          <div key={index} className="list-group-item">
+                            {whip.name}: {whip.points}
+                          </div>
+                        ))
+                      ) : (
+                        <div>No bonus points available</div>
+                      )}
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           )
         )}

@@ -173,3 +173,8 @@ body.dark-mode {
 .dark-mode .select__single-value {
   color: #ffffff;
 }
+
+.dark-mode .text-muted {
+  color: #bbbbbb !important;
+}
+
