@@ -83,7 +83,7 @@ body.dark-mode {
 }
 
 .dark-mode .text-muted {
-  color: #aaaaaa !important;
+  color: #aaaaaa;
 }
 
 .dark-mode .form-control {
@@ -122,4 +122,54 @@ body.dark-mode {
 
 .dark-mode .btn-outline-dark:focus {
   box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.dark-mode .select__control {
+  background-color: #333333;
+  border-color: #555555;
+}
+
+.dark-mode .select__menu {
+  background-color: #333333;
+}
+
+.dark-mode .select__option {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+.dark-mode .select__option--is-focused {
+  background-color: #444444;
+}
+
+.dark-mode .select__option--is-selected {
+  background-color: #555555;
+}
+
+.dark-mode .select__multi-value {
+  background-color: #444444;
+}
+
+.dark-mode .select__multi-value__label {
+  color: #ffffff;
+}
+
+.dark-mode .select__input-container {
+  color: #ffffff;
+}
+
+.dark-mode .select__placeholder {
+  color: #aaaaaa;
+}
+
+.dark-mode .select__indicator {
+  color: #aaaaaa;
+}
+
+.dark-mode .select__indicator:hover {
+  color: #ffffff;
+}
+
+.dark-mode .select__single-value {
+  color: #ffffff;
 }

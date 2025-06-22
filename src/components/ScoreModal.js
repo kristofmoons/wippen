@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Dropdown from "./Dropdown";
 import { TbCardsFilled } from "react-icons/tb";
 import { GiSpades } from "react-icons/gi";
+import Select from 'react-select';
 
 
 const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
@@ -33,6 +34,19 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
       setValidationErrors({});
     }
   }, [show, players]);
+
+  const handleMultiSelectChange = (selectedOptions, setter) => {
+    if (!selectedOptions) {
+      setter([]);
+      return;
+    }
+    
+    const selectedPlayers = selectedOptions.map(option => 
+      players.find(player => player.name === option.value)
+    ).filter(Boolean); 
+    
+    setter(selectedPlayers);
+  };
 
   const handleDropdownChange = (e, setter, addPlayer) => {
     const selectedPlayer = players.find(
@@ -153,47 +167,29 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="text-center mt-4">
-          <div className="row">
+        <div className="row">
             <div className="col">
-              <Dropdown
-                title="meeste kaarten:"
-                players={players}
-                selectedPlayer={
-                  mostCardsPlayers.length > 0
-                    ? mostCardsPlayers[mostCardsPlayers.length - 1].name
-                    : ""
-                }
-                onChange={(e) =>
-                  handleDropdownChange(
-                    e,
-                    setMostCardsPlayers,
-                    handleAddMostCardsPlayer
-                  )
-                }
-                className={
-                  validationErrors.mostCardsPlayers ? "is-invalid" : ""
-                }
+              <label className="form-label">Meeste kaarten:</label>
+              <Select
+                isMulti
+                name="mostCardsPlayers"
+                options={players.map(p => ({ value: p.name, label: p.name }))}
+                className={`basic-multi-select ${validationErrors.mostCardsPlayers ? "is-invalid" : ""}`}
+                classNamePrefix="select"
+                value={mostCardsPlayers.map(p => ({ value: p.name, label: p.name }))}
+                onChange={(selected) => handleMultiSelectChange(selected, setMostCardsPlayers)}
               />
             </div>
             <div className="col">
-              <Dropdown
-                title="meeste ♠:"
-                players={players}
-                selectedPlayer={
-                  mostSpadesPlayers.length > 0
-                    ? mostSpadesPlayers[mostSpadesPlayers.length - 1].name
-                    : ""
-                }
-                onChange={(e) =>
-                  handleDropdownChange(
-                    e,
-                    setMostSpadesPlayers,
-                    handleAddMostSpadesPlayer
-                  )
-                }
-                className={
-                  validationErrors.mostSpadesPlayers ? "is-invalid" : ""
-                }
+              <label className="form-label">Meeste ♠:</label>
+              <Select
+                isMulti
+                name="mostSpadesPlayers"
+                options={players.map(p => ({ value: p.name, label: p.name }))}
+                className={`basic-multi-select ${validationErrors.mostSpadesPlayers ? "is-invalid" : ""}`}
+                classNamePrefix="select"
+                value={mostSpadesPlayers.map(p => ({ value: p.name, label: p.name }))}
+                onChange={(selected) => handleMultiSelectChange(selected, setMostSpadesPlayers)}
               />
             </div>
           </div>
