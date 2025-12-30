@@ -41,8 +41,7 @@ const ScoreChart = ({ rounds }) => {
           };
         }
         
-        const previousScore = roundIndex > 0 ? playerData[player.name].scores[roundIndex - 1] : 0;
-        playerData[player.name].scores[roundIndex] = previousScore + player.score;
+        playerData[player.name].scores[roundIndex] = player.score;
       });
     });
 
