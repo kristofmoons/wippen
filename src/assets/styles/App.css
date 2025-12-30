@@ -6,11 +6,11 @@
    Base Styles - Warm Wood Theme
    ============================================ */
 html {
-  background-color: #3E2723;
+  background-color: #4A332C;
 }
 
 body {
-  background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  background: #4A332C;
   background-attachment: fixed;
   min-height: 100vh;
   min-height: -webkit-fill-available;

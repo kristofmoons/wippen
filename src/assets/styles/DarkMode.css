@@ -7,11 +7,11 @@
    ============================================ */
 html.dark-mode,
 body.dark-mode {
-  background-color: #1a1a1a;
+  background-color: #221A17;
 }
 
 body.dark-mode {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d1f1f 100%);
+  background: #221A17;
   background-attachment: fixed;
   color: #E8E0D5;
 }
