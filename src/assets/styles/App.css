@@ -1,0 +1,413 @@
+/* ============================================
+   Wippen Score Tracker - Bar/Pub Theme
+   ============================================ */
+
+/* ============================================
+   Base Styles - Warm Wood Theme
+   ============================================ */
+body {
+  background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* ============================================
+   Main Container
+   ============================================ */
+.container {
+  max-width: 800px;
+}
+
+/* ============================================
+   Title Styles
+   ============================================ */
+h1.text-center {
+  color: #FFD54F;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 2rem;
+  letter-spacing: 0.5px;
+}
+
+h1.text-center::before {
+  content: '🃏 ';
+}
+
+h1.text-center::after {
+  content: ' 🍺';
+}
+
+/* ============================================
+   Card Styles
+   ============================================ */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  background: #EFEBE9;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #6D4C41 0%, #4E342E 100%);
+  color: #FFD54F;
+  border-bottom: 2px solid #FFB300;
+  padding: 1rem 1.25rem;
+}
+
+.card-header h5 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+  background: #EFEBE9;
+}
+
+.card-footer {
+  background: #D7CCC8;
+  border-top: 1px solid #BCAAA4;
+  padding: 1rem 1.25rem;
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #FF8F00 0%, #E65100 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #FFA000 0%, #EF6C00 100%);
+}
+
+.btn-primary:disabled {
+  background: #BCAAA4;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #8D6E63 0%, #5D4037 100%);
+  border: none;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #A1887F 0%, #6D4C41 100%);
+}
+
+.btn-outline-danger {
+  border: 2px solid #D32F2F;
+  color: #D32F2F;
+  background: transparent;
+}
+
+.btn-outline-danger:hover {
+  background: #D32F2F;
+  color: white;
+}
+
+.btn-outline-dark {
+  border: 2px solid #FFD54F;
+  color: #FFD54F;
+  background: transparent;
+}
+
+.btn-outline-dark:hover {
+  background: rgba(255, 213, 79, 0.15);
+  color: #FFD54F;
+}
+
+.btn-outline-success {
+  border: 2px solid #388E3C;
+  color: #388E3C;
+}
+
+.btn-outline-success:hover {
+  background: #388E3C;
+  color: white;
+}
+
+/* ============================================
+   Form Styles - Fixed Alignment
+   ============================================ */
+.input-group {
+  padding: 1rem 1.25rem;
+  background: #D7CCC8;
+  display: flex;
+  align-items: stretch;
+}
+
+.input-group .form-control {
+  border-radius: 8px 0 0 8px;
+  border: 1px solid #BCAAA4;
+  border-right: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: #EFEBE9;
+  height: auto;
+}
+
+.input-group .form-control:focus {
+  border-color: #FF8F00;
+  box-shadow: none;
+  background: #FFF;
+}
+
+.input-group .input-group-append {
+  display: flex;
+}
+
+.input-group .input-group-append .btn {
+  border-radius: 0 8px 8px 0;
+  padding: 0.5rem 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================
+   Table Styles
+   ============================================ */
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  color: #FFD54F;
+  font-weight: 600;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.table thead th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(46, 125, 50, 0.1);
+}
+
+.table tbody td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  font-weight: 500;
+  border-color: #BCAAA4;
+  color: #3E2723;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(46, 125, 50, 0.05);
+}
+
+/* ============================================
+   Modal Styles
+   ============================================ */
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #6D4C41 0%, #4E342E 100%);
+  color: #FFD54F;
+  border-bottom: 2px solid #FFB300;
+  padding: 1rem 1.25rem;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-body {
+  padding: 1.25rem;
+  background: #EFEBE9;
+  color: #3E2723;
+}
+
+.modal-footer {
+  border-top: 1px solid #BCAAA4;
+  padding: 0.75rem 1.25rem;
+  background: #D7CCC8;
+}
+
+/* ============================================
+   Select Styles (react-select)
+   ============================================ */
+.select__control {
+  border-radius: 8px !important;
+  border: 1px solid #BCAAA4 !important;
+  min-height: 38px !important;
+  background: #EFEBE9 !important;
+}
+
+.select__control--is-focused {
+  border-color: #FF8F00 !important;
+  box-shadow: none !important;
+}
+
+.select__multi-value {
+  background: #FF8F00 !important;
+  border-radius: 4px !important;
+}
+
+.select__multi-value__label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.select__multi-value__remove:hover {
+  background: #E65100 !important;
+  color: white !important;
+}
+
+.select__placeholder {
+  color: #8D6E63 !important;
+}
+
+.select__single-value {
+  color: #3E2723 !important;
+}
+
+/* ============================================
+   List Group Styles
+   ============================================ */
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #BCAAA4;
+  padding: 0.75rem 1rem;
+  background: #EFEBE9;
+  color: #3E2723;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+/* ============================================
+   Alert Styles
+   ============================================ */
+.alert-info {
+  background: rgba(255, 143, 0, 0.1);
+  border: 1px solid #FFB300;
+  border-radius: 8px;
+  color: #E65100;
+  font-weight: 500;
+}
+
+/* ============================================
+   Chart Container
+   ============================================ */
+.chart-container {
+  background: #EFEBE9;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* ============================================
+   Text Styles
+   ============================================ */
+.text-muted {
+  color: #8D6E63 !important;
+}
+
+/* ============================================
+   Border Styles
+   ============================================ */
+.border-bottom {
+  border-color: #BCAAA4 !important;
+}
+
+/* ============================================
+   Form Labels
+   ============================================ */
+.form-label {
+  color: #5D4037;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   Dropdown Select Styles
+   ============================================ */
+.form-group .form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235D4037' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  padding-right: 2rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid #BCAAA4;
+  background-color: #EFEBE9;
+}
+
+.form-group .form-control:focus {
+  border-color: #FF8F00;
+  box-shadow: none;
+  background-color: #FFF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF8F00' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   Bonus Points Buttons in Modal
+   ============================================ */
+.modal-body .btn-outline-dark {
+  border-color: #5D4037;
+  color: #5D4037;
+}
+
+.modal-body .btn-outline-dark:hover {
+  background: rgba(93, 64, 55, 0.1);
+}
+
+.modal-body .btn-outline-dark.active {
+  background: #FF8F00 !important;
+  color: white !important;
+  border-color: #FF8F00 !important;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 576px) {
+  h1.text-center {
+    font-size: 1.5rem;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 0.5rem 0.75rem;
+  }
+}

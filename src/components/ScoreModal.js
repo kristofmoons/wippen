@@ -1,163 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
-import Dropdown from "./Dropdown";
+import Select from "react-select";
 import { TbCardsFilled } from "react-icons/tb";
 import { GiSpades } from "react-icons/gi";
-import Select from 'react-select';
+import Dropdown from "./Dropdown";
+import { useRoundSelections } from "../hooks/useGame";
+import { SPECIAL_CARDS } from "../constants/gameConfig";
+import {
+  calculatePlayerScore,
+  createRoundDetails,
+  validateSelections,
+} from "../utils/gameUtils";
 
-
+/**
+ * Modal component for adding scores at the end of each round
+ */
 const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
-  const [mostCardsPlayers, setMostCardsPlayers] = useState([]);
-  const [mostSpadesPlayers, setMostSpadesPlayers] = useState([]);
-  const [diamondTenPlayer, setDiamondTenPlayer] = useState(null);
-  const [spadeTwoPlayer, setSpadeTwoPlayer] = useState(null);
-  const [spadeAcePlayer, setSpadeAcePlayer] = useState(null);
-  const [heartAcePlayer, setHeartAcePlayer] = useState(null);
-  const [diamondAcePlayer, setDiamondAcePlayer] = useState(null);
-  const [clubAcePlayer, setClubAcePlayer] = useState(null);
-  const [bonusPoints, setBonusPoints] = useState([]);
-  const [validationErrors, setValidationErrors] = useState({});
+  const {
+    selections,
+    bonusPoints,
+    validationErrors,
+    setValidationErrors,
+    resetSelections,
+    handleDropdownChange,
+    handleMultiSelectChange,
+    togglePlayerInArray,
+    handleBonusPointsChange,
+  } = useRoundSelections(players);
 
+  // Reset selections when modal opens
   useEffect(() => {
     if (show) {
-      setBonusPoints(
-        players.map((player) => ({ name: player.name, points: 0 }))
-      );
-      setMostCardsPlayers([]);
-      setMostSpadesPlayers([]);
-      setDiamondTenPlayer(null);
-      setSpadeTwoPlayer(null);
-      setSpadeAcePlayer(null);
-      setHeartAcePlayer(null);
-      setDiamondAcePlayer(null);
-      setClubAcePlayer(null);
-      setValidationErrors({});
+      resetSelections();
     }
-  }, [show, players]);
+  }, [show, resetSelections]);
 
-  const handleMultiSelectChange = (selectedOptions, setter) => {
-    if (!selectedOptions) {
-      setter([]);
-      return;
-    }
-    
-    const selectedPlayers = selectedOptions.map(option => 
-      players.find(player => player.name === option.value)
-    ).filter(Boolean); 
-    
-    setter(selectedPlayers);
-  };
+  // Convert players to Select options
+  const playerOptions = players.map((p) => ({ value: p.name, label: p.name }));
 
-  const handleDropdownChange = (e, setter, addPlayer) => {
-    const selectedPlayer = players.find(
-      (player) => player.name === e.target.value
-    );
-    setter(selectedPlayer);
-    if (addPlayer) addPlayer(selectedPlayer);
-  };
-
-  const handleBonusPointsChange = (playerName, increment) => {
-    setBonusPoints((prevPoints) =>
-      prevPoints.map((point) =>
-        point.name === playerName
-          ? { ...point, points: Math.max(0, point.points + increment) }
-          : point
-      )
-    );
-  };
-
-  const handleAddMostCardsPlayer = (player) => {
-    if (mostCardsPlayers.some((p) => p.name === player.name)) {
-      setMostCardsPlayers(
-        mostCardsPlayers.filter((p) => p.name !== player.name)
-      );
-    } else {
-      setMostCardsPlayers([...mostCardsPlayers, player]);
-    }
-  };
-
-  const handleAddMostSpadesPlayer = (player) => {
-    if (mostSpadesPlayers.some((p) => p.name === player.name)) {
-      setMostSpadesPlayers(
-        mostSpadesPlayers.filter((p) => p.name !== player.name)
-      );
-    } else {
-      setMostSpadesPlayers([...mostSpadesPlayers, player]);
-    }
-  };
-
-  const validateFields = () => {
-    const errors = {};
-    if (mostCardsPlayers.length === 0) errors.mostCardsPlayers = true;
-    if (mostSpadesPlayers.length === 0) errors.mostSpadesPlayers = true;
-    if (!diamondTenPlayer) errors.diamondTenPlayer = true;
-    if (!spadeTwoPlayer) errors.spadeTwoPlayer = true;
-    if (!spadeAcePlayer) errors.spadeAcePlayer = true;
-    if (!heartAcePlayer) errors.heartAcePlayer = true;
-    if (!diamondAcePlayer) errors.diamondAcePlayer = true;
-    if (!clubAcePlayer) errors.clubAcePlayer = true;
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
+  // Handle save scores
   const handleSaveScores = () => {
-    if (!validateFields()) return;
+    const errors = validateSelections(selections);
+    setValidationErrors(errors);
 
-    const updatedPlayers = players.map((player) => {
-      let newScore = player.score;
-      if (mostCardsPlayers.some((p) => p.name === player.name)) {
-        newScore += mostCardsPlayers.length > 1 ? 1 : 2;
-      }
-      
-      if (mostSpadesPlayers.some((p) => p.name === player.name)) {
-        newScore += mostSpadesPlayers.length > 1 ? 1 : 2;
-      }
-      
-      if (diamondTenPlayer && player.name === diamondTenPlayer.name) {
-        newScore += 2;
-      }
-      if (spadeTwoPlayer && player.name === spadeTwoPlayer.name) {
-        newScore += 1;
-      }
-      if (spadeAcePlayer && player.name === spadeAcePlayer.name) {
-        newScore += 1;
-      }
-      if (heartAcePlayer && player.name === heartAcePlayer.name) {
-        newScore += 1;
-      }
-      if (diamondAcePlayer && player.name === diamondAcePlayer.name) {
-        newScore += 1;
-      }
-      if (clubAcePlayer && player.name === clubAcePlayer.name) {
-        newScore += 1;
-      }
-      const playerBonus = bonusPoints.find(
-        (point) => point.name === player.name
-      );
-      if (playerBonus) {
-        newScore += playerBonus.points;
-      }
-      return { ...player, score: newScore };
-    });
+    if (Object.keys(errors).length > 0) return;
 
-    const roundDetails = {
-      players: updatedPlayers,
-      details: {
-        mostCardsPlayers: mostCardsPlayers.map((p) => p.name),
-        mostSpadesPlayers: mostSpadesPlayers.map((p) => p.name),
-        diamondTenPlayer: diamondTenPlayer ? diamondTenPlayer.name : null,
-        spadeTwoPlayer: spadeTwoPlayer ? spadeTwoPlayer.name : null,
-        spadeAcePlayer: spadeAcePlayer ? spadeAcePlayer.name : null,
-        heartAcePlayer: heartAcePlayer ? heartAcePlayer.name : null,
-        diamondAcePlayer: diamondAcePlayer ? diamondAcePlayer.name : null,
-        clubAcePlayer: clubAcePlayer ? clubAcePlayer.name : null,
-        whips: bonusPoints.filter((point) => point.points > 0),
-      },
-    };
+    // Calculate new scores for all players
+    const updatedPlayers = players.map((player) => ({
+      ...player,
+      score: calculatePlayerScore(player, selections, bonusPoints),
+    }));
 
+    // Create and save round details
+    const roundDetails = createRoundDetails(
+      updatedPlayers,
+      selections,
+      bonusPoints
+    );
     setPlayers(updatedPlayers);
     addRound(roundDetails);
     handleClose();
+  };
+
+  // Check if player is selected in multi-select
+  const isPlayerSelected = (player, fieldName) => {
+    return selections[fieldName].some((p) => p.name === player.name);
   };
 
   return (
@@ -165,19 +72,29 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
       <Modal.Header closeButton>
         <Modal.Title>Score toevoegen</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
         <div className="text-center mt-4">
-        <div className="row">
+          {/* Multi-select rows */}
+          <div className="row">
             <div className="col">
               <label className="form-label">Meeste kaarten:</label>
               <Select
                 isMulti
                 name="mostCardsPlayers"
-                options={players.map(p => ({ value: p.name, label: p.name }))}
-                className={`basic-multi-select ${validationErrors.mostCardsPlayers ? "is-invalid" : ""}`}
+                options={playerOptions}
+                className={`basic-multi-select ${
+                  validationErrors.mostCardsPlayers ? "is-invalid" : ""
+                }`}
                 classNamePrefix="select"
-                value={mostCardsPlayers.map(p => ({ value: p.name, label: p.name }))}
-                onChange={(selected) => handleMultiSelectChange(selected, setMostCardsPlayers)}
+                value={selections.mostCardsPlayers.map((p) => ({
+                  value: p.name,
+                  label: p.name,
+                }))}
+                onChange={(selected) =>
+                  handleMultiSelectChange(selected, "mostCardsPlayers")
+                }
+                placeholder="Selecteer..."
               />
             </div>
             <div className="col">
@@ -185,126 +102,95 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
               <Select
                 isMulti
                 name="mostSpadesPlayers"
-                options={players.map(p => ({ value: p.name, label: p.name }))}
-                className={`basic-multi-select ${validationErrors.mostSpadesPlayers ? "is-invalid" : ""}`}
+                options={playerOptions}
+                className={`basic-multi-select ${
+                  validationErrors.mostSpadesPlayers ? "is-invalid" : ""
+                }`}
                 classNamePrefix="select"
-                value={mostSpadesPlayers.map(p => ({ value: p.name, label: p.name }))}
-                onChange={(selected) => handleMultiSelectChange(selected, setMostSpadesPlayers)}
-              />
-            </div>
-          </div>
-          <div className="row mt-2">
-            <div className="col">
-              <Dropdown
-                title="♦10 in bezit:"
-                players={players}
-                selectedPlayer={diamondTenPlayer ? diamondTenPlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setDiamondTenPlayer)}
-                className={
-                  validationErrors.diamondTenPlayer ? "is-invalid" : ""
+                value={selections.mostSpadesPlayers.map((p) => ({
+                  value: p.name,
+                  label: p.name,
+                }))}
+                onChange={(selected) =>
+                  handleMultiSelectChange(selected, "mostSpadesPlayers")
                 }
-              />
-            </div>
-            <div className="col">
-              <Dropdown
-                title="♠2 in bezit:"
-                players={players}
-                selectedPlayer={spadeTwoPlayer ? spadeTwoPlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setSpadeTwoPlayer)}
-                className={validationErrors.spadeTwoPlayer ? "is-invalid" : ""}
+                placeholder="Selecteer..."
               />
             </div>
           </div>
-          <div className="row mt-2">
-            <div className="col">
-              <Dropdown
-                title="♠A in bezit:"
-                players={players}
-                selectedPlayer={spadeAcePlayer ? spadeAcePlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setSpadeAcePlayer)}
-                className={validationErrors.spadeAcePlayer ? "is-invalid" : ""}
-              />
+
+          {/* Special cards dropdowns - rendered in pairs */}
+          {[0, 2, 4].map((startIndex) => (
+            <div className="row mt-2" key={startIndex}>
+              {SPECIAL_CARDS.slice(startIndex, startIndex + 2).map((card) => (
+                <div className="col" key={card.id}>
+                  <Dropdown
+                    id={card.id}
+                    title={card.label}
+                    players={players}
+                    selectedPlayer={selections[`${card.id}Player`]?.name || ""}
+                    onChange={(e) => handleDropdownChange(e, `${card.id}Player`)}
+                    className={
+                      validationErrors[`${card.id}Player`] ? "is-invalid" : ""
+                    }
+                  />
+                </div>
+              ))}
             </div>
-            <div className="col">
-              <Dropdown
-                title="♥A in bezit:"
-                players={players}
-                selectedPlayer={heartAcePlayer ? heartAcePlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setHeartAcePlayer)}
-                className={validationErrors.heartAcePlayer ? "is-invalid" : ""}
-              />
-            </div>
-          </div>
-          <div className="row mt-2">
-            <div className="col">
-              <Dropdown
-                title="♦A in bezit:"
-                players={players}
-                selectedPlayer={diamondAcePlayer ? diamondAcePlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setDiamondAcePlayer)}
-                className={
-                  validationErrors.diamondAcePlayer ? "is-invalid" : ""
-                }
-              />
-            </div>
-            <div className="col">
-              <Dropdown
-                title="♣A in bezit:"
-                players={players}
-                selectedPlayer={clubAcePlayer ? clubAcePlayer.name : ""}
-                onChange={(e) => handleDropdownChange(e, setClubAcePlayer)}
-                className={validationErrors.clubAcePlayer ? "is-invalid" : ""}
-              />
-            </div>
-          </div>
+          ))}
+
+          {/* Bonus points section */}
           <div className="row mt-4">
             <div className="col">
-              <h5>Bonus Points:</h5>
+              <h5>Bonus Points (Wippen):</h5>
               {players.map((player, index) => (
                 <div
                   key={index}
                   className="d-flex justify-content-between align-items-center border-bottom py-2"
                 >
+                  {/* Player name and current bonus */}
                   <div className="d-flex align-items-center ms-3">
                     <span className="font-weight-bold me-3">{player.name}</span>
-                    <span className="text-muted ml-3">
-                      (
-                      {bonusPoints.find((point) => point.name === player.name)
-                        ?.points || 0}
-                      )
+                    <span className="text-muted">
+                      ({bonusPoints.find((p) => p.name === player.name)?.points || 0})
                     </span>
                   </div>
-                  <div className="me-3">
-                  <button
-                    className={`btn btn-outline-dark btn-sm mx-1 ${
-                      mostCardsPlayers.some((p) => p.name === player.name)
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() => handleAddMostCardsPlayer(player)}
-                  >
-                    <TbCardsFilled />
 
-                  </button>
-                  <button
-                    className={`btn btn-outline-dark btn-sm mx-1 ${
-                      mostSpadesPlayers.some((p) => p.name === player.name)
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() => handleAddMostSpadesPlayer(player)}
-                  >
-                    <GiSpades />
-                  </button>
-                  </div>
+                  {/* Quick select buttons for most cards/spades */}
                   <div className="me-3">
                     <button
-                      className="btn btn-outline-danger btn-sm mx-3"
+                      type="button"
+                      className={`btn btn-outline-dark btn-sm mx-1 ${
+                        isPlayerSelected(player, "mostCardsPlayers") ? "active" : ""
+                      }`}
+                      onClick={() => togglePlayerInArray(player, "mostCardsPlayers")}
+                      title="Meeste kaarten"
+                    >
+                      <TbCardsFilled />
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-outline-dark btn-sm mx-1 ${
+                        isPlayerSelected(player, "mostSpadesPlayers") ? "active" : ""
+                      }`}
+                      onClick={() => togglePlayerInArray(player, "mostSpadesPlayers")}
+                      title="Meeste schoppen"
+                    >
+                      <GiSpades />
+                    </button>
+                  </div>
+
+                  {/* Bonus points increment/decrement */}
+                  <div className="me-3">
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm mx-1"
                       onClick={() => handleBonusPointsChange(player.name, -1)}
                     >
                       -
                     </button>
                     <button
+                      type="button"
                       className="btn btn-outline-success btn-sm mx-1"
                       onClick={() => handleBonusPointsChange(player.name, 1)}
                     >
@@ -317,6 +203,7 @@ const ScoreModal = ({ show, handleClose, players, setPlayers, addRound }) => {
           </div>
         </div>
       </Modal.Body>
+
       <Modal.Footer>
         <button className="btn btn-secondary" onClick={handleClose}>
           Sluiten

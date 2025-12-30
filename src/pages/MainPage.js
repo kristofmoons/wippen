@@ -1,86 +1,81 @@
-import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import ScoreModal from "../components/ScoreModal";
-import RoundModal from "../components/RoundModal";
-import { FaMoon, FaSun } from "react-icons/fa"; 
-import "../assets/styles/DarkMode.css"; 
+import React, { useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import useLocalStorageState from 'use-local-storage-state';
 
+import ScoreModal from '../components/ScoreModal';
+import RoundModal from '../components/RoundModal';
+import { useGameActions, useModals } from '../hooks/useGame';
+import { STORAGE_KEYS } from '../constants/gameConfig';
+import '../assets/styles/App.css';
+import '../assets/styles/DarkMode.css';
+
+/**
+ * Get system dark mode preference
+ */
+const getSystemDarkModePreference = () => {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+};
+
+/**
+ * Main page component for Wippen Score Tracker
+ */
 const MainPage = () => {
-  const [players, setPlayers] = useLocalStorageState('wippen_players', { defaultValue: [] });
-  const [rounds, setRounds] = useLocalStorageState('wippen_rounds', { defaultValue: [] });
-  const [darkMode, setDarkMode] = useLocalStorageState('wippen_darkMode', { 
-    defaultValue: typeof window !== 'undefined' 
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches 
-      : false,
-  });  
+  // Persistent state (localStorage)
+  const [players, setPlayers] = useLocalStorageState(STORAGE_KEYS.PLAYERS, { defaultValue: [] });
+  const [rounds, setRounds] = useLocalStorageState(STORAGE_KEYS.ROUNDS, { defaultValue: [] });
+  const [darkMode, setDarkMode] = useLocalStorageState(STORAGE_KEYS.DARK_MODE, {
+    defaultValue: getSystemDarkModePreference(),
+  });
 
-  const [playerNameError, setPlayerNameError] = useState(false);
-  const [showScoreModal, setShowScoreModal] = useState(false);
-  const [showRoundModal, setShowRoundModal] = useState(false);
-  const [selectedRound, setSelectedRound] = useState(null);
+  // Game actions
+  const { playerNameError, addPlayer, restartGame, addRound } = useGameActions(setPlayers, setRounds);
 
+  // Modal state
+  const {
+    showScoreModal,
+    showRoundModal,
+    selectedRound,
+    setSelectedRound,
+    openScoreModal,
+    closeScoreModal,
+    openRoundModal,
+    closeRoundModal,
+  } = useModals();
+
+  // Apply dark mode class to body
   useEffect(() => {
-    document.body.classList.toggle("dark-mode", darkMode);
+    document.body.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
-  const addPlayer = (name) => {
-    if (name.trim() === "") {
-      setPlayerNameError(true);
-      return;
+  // Toggle dark mode
+  const toggleDarkMode = () => setDarkMode(!darkMode);
+
+  // Handle player form submission
+  const handleAddPlayer = (e) => {
+    e.preventDefault();
+    const input = e.target.elements.playerName;
+    if (addPlayer(input.value)) {
+      input.value = '';
     }
-
-    setPlayerNameError(false);
-
-    setPlayers((prevPlayers) => {
-      if (prevPlayers.some((player) => player.name === name.trim())) {
-        setPlayerNameError(true);
-        return prevPlayers;
-      }
-
-      return [...prevPlayers, { name: name.trim(), score: 0 }];
-    });
-  };
-
-  const restartGame = () => {
-    setPlayers([]);
-    setRounds([]);
-  };
-
-  const handleShowScoreModal = () => {
-    setShowScoreModal(true);
-  };
-
-  const handleCloseScoreModal = () => {
-    setShowScoreModal(false);
-  };
-
-  const handleShowRoundModal = () => {
-    setShowRoundModal(true);
-  };
-
-  const handleCloseRoundModal = () => {
-    setShowRoundModal(false);
-  };
-
-  const addRound = (roundDetails) => {
-    setRounds((prevRounds) => [...prevRounds, roundDetails]);
-  };
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.body.classList.toggle("dark-mode", !darkMode);
   };
 
   return (
-    <div className={darkMode ? "dark-mode" : ""}>
+    <div className={darkMode ? 'dark-mode' : ''}>
       <div className="container mt-5">
         <h1 className="text-center mb-4">Wippen Score Tracker</h1>
+
         <div className="card">
+          {/* Header */}
           <div className="card-header d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Score Board</h5>
             <div>
-              <button className="btn btn-outline-dark me-2" onClick={toggleDarkMode}>
+              <button
+                className="btn btn-outline-dark me-2"
+                onClick={toggleDarkMode}
+                aria-label={darkMode ? 'Light mode' : 'Dark mode'}
+              >
                 {darkMode ? <FaSun /> : <FaMoon />}
               </button>
               <button className="btn btn-outline-danger" onClick={restartGame}>
@@ -88,20 +83,16 @@ const MainPage = () => {
               </button>
             </div>
           </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const playerName = e.target.elements.playerName.value;
-              addPlayer(playerName);
-              e.target.elements.playerName.value = "";
-            }}
-          >
+
+          {/* Add player form */}
+          <form onSubmit={handleAddPlayer}>
             <div className="input-group mb-3">
               <input
                 type="text"
-                className={`form-control ${playerNameError ? "is-invalid" : ""}`}
+                className={`form-control ${playerNameError ? 'is-invalid' : ''}`}
                 name="playerName"
                 placeholder="Voeg speler toe"
+                autoComplete="off"
               />
               <div className="input-group-append">
                 <button className="btn btn-primary" type="submit">
@@ -115,15 +106,15 @@ const MainPage = () => {
               )}
             </div>
           </form>
+
+          {/* Players table */}
           <div className="card-body">
             {players.length > 0 ? (
               <table className="table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">Naam</th>
-                    <th scope="col" className="text-center">
-                      Score
-                    </th>
+                    <th scope="col" className="text-center">Score</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -136,28 +127,37 @@ const MainPage = () => {
                 </tbody>
               </table>
             ) : (
-              <p className="text-center">No players added yet.</p>
+              <p className="text-center text-muted">Nog geen spelers toegevoegd.</p>
             )}
           </div>
+
+          {/* Footer buttons */}
           <div className="card-footer d-flex justify-content-between">
-            <button className="btn btn-secondary" onClick={handleShowRoundModal}>
+            <button className="btn btn-secondary" onClick={openRoundModal}>
               Bekijk Rondes
             </button>
-            <button className="btn btn-primary" onClick={handleShowScoreModal}>
+            <button
+              className="btn btn-primary"
+              onClick={openScoreModal}
+              disabled={players.length < 2}
+            >
               Volgende Ronde
             </button>
           </div>
         </div>
+
+        {/* Modals */}
         <ScoreModal
           show={showScoreModal}
-          handleClose={handleCloseScoreModal}
+          handleClose={closeScoreModal}
           players={players}
           setPlayers={setPlayers}
           addRound={addRound}
         />
+
         <RoundModal
           show={showRoundModal}
-          handleClose={handleCloseRoundModal}
+          handleClose={closeRoundModal}
           rounds={rounds}
           selectedRound={selectedRound}
           setSelectedRound={setSelectedRound}

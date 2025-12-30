@@ -10,7 +10,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { prepareChartData } from "../utils/gameUtils";
 
+// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,75 +23,37 @@ ChartJS.register(
   Legend
 );
 
-const ScoreChart = ({ rounds }) => {
-  const [chartData, setChartData] = useState({
-    labels: [],
-    datasets: [],
-  });
+/**
+ * Get chart options based on dark mode
+ * @param {boolean} isDarkMode - Whether dark mode is enabled
+ * @returns {Object} - Chart options
+ */
+const getChartOptions = (isDarkMode) => {
+  const textColor = isDarkMode ? "#ffffff" : "#666666";
+  const gridColor = isDarkMode
+    ? "rgba(255, 255, 255, 0.1)"
+    : "rgba(0, 0, 0, 0.1)";
 
-  useEffect(() => {
-    if (rounds.length === 0) return;
-
-    const playerData = {};
-    
-    rounds.forEach((round, roundIndex) => {
-      round.players.forEach((player) => {
-        if (!playerData[player.name]) {
-          playerData[player.name] = {
-            scores: Array(rounds.length).fill(0),
-            color: getRandomColor(player.name),
-          };
-        }
-        
-        playerData[player.name].scores[roundIndex] = player.score;
-      });
-    });
-
-    setChartData({
-      labels: rounds.map((_, index) => `Ronde ${index + 1}`),
-      datasets: Object.entries(playerData).map(([name, data]) => ({
-        label: name,
-        data: data.scores,
-        borderColor: data.color,
-        backgroundColor: `${data.color}33`, 
-        tension: 0.3,
-        pointRadius: 5,
-        pointHoverRadius: 8,
-      })),
-    });
-  }, [rounds]);
-
-  const getRandomColor = (name) => {
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    
-    const c = (hash & 0x00ffffff).toString(16).toUpperCase().padStart(6, "0");
-    return `#${c}`;
-  };
-
-  const chartOptions = {
+  return {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
+        labels: {
+          color: textColor,
+        },
       },
       title: {
         display: true,
         text: "Score Verloop",
-        font: {
-          size: 18,
-        },
+        font: { size: 18 },
+        color: textColor,
       },
       tooltip: {
         callbacks: {
-          label: function (context) {
-            const label = context.dataset.label || "";
-            const value = context.parsed.y;
-            return `${label}: ${value} punten`;
-          },
+          label: (context) =>
+            `${context.dataset.label || ""}: ${context.parsed.y} punten`,
         },
       },
     },
@@ -99,20 +63,68 @@ const ScoreChart = ({ rounds }) => {
         title: {
           display: true,
           text: "Cumulatieve Score",
+          color: textColor,
+        },
+        ticks: {
+          color: textColor,
+        },
+        grid: {
+          color: gridColor,
         },
       },
       x: {
         title: {
           display: true,
           text: "Ronde",
+          color: textColor,
+        },
+        ticks: {
+          color: textColor,
+        },
+        grid: {
+          color: gridColor,
         },
       },
     },
   };
+};
+
+/**
+ * Line chart component for displaying score progression
+ */
+const ScoreChart = ({ rounds }) => {
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Check for dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.body.classList.contains("dark-mode"));
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Watch for changes to body class
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    setChartData(prepareChartData(rounds));
+  }, [rounds]);
 
   return (
-    <div style={{ height: "400px" }}>
-      <Line data={chartData} options={chartOptions} />
+    <div className="chart-container" style={{ height: "400px" }}>
+      <Line data={chartData} options={getChartOptions(isDarkMode)} />
     </div>
   );
 };
