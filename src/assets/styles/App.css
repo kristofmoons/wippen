@@ -5,10 +5,23 @@
 /* ============================================
    Base Styles - Warm Wood Theme
    ============================================ */
+html {
+  background-color: #3E2723;
+}
+
 body {
   background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  background-attachment: fixed;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
   padding-bottom: 2rem;
+}
+
+/* iOS Safari fix */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
 }
 
 /* ============================================

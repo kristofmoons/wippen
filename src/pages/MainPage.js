@@ -47,6 +47,7 @@ const MainPage = () => {
   // Apply dark mode class to body
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
+    document.documentElement.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
   // Toggle dark mode

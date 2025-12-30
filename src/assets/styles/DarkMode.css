@@ -5,8 +5,14 @@
 /* ============================================
    Base Dark Mode
    ============================================ */
+html.dark-mode,
+body.dark-mode {
+  background-color: #1a1a1a;
+}
+
 body.dark-mode {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d1f1f 100%);
+  background-attachment: fixed;
   color: #E8E0D5;
 }
 
